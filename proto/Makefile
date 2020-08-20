@@ -1,4 +1,4 @@
-include ../lib/nanopb/extra/nanopb.mk
+include ../lib/nanopb-0.4.2/extra/nanopb.mk
 
 protofile ?= message.proto
 out ?= ../dist/
@@ -13,7 +13,7 @@ CSRC += $(NANOPB_DIR)/pb_common.c  # The nanopb common parts
 build:
 	@echo "Compiling..."
 	@mkdir -p $(out)
-	$(PROTOC) $(PROTOC_OPTS) ./message.proto --python_out=$(out) --nanopb_out=$(out)
+	@$(PROTOC) $(PROTOC_OPTS) ./message.proto --python_out=$(out) --nanopb_out=$(out)
 	@echo "Done."
 
 clean:
