@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+message Message {
+    enum Location {
+        GROUND_STATION = 0;
+        PLANE = 1;
+        GLIDER0 = 2;
+        GLIDER1 = 3;
+        ANY = 4;
+    }
+    // Packet info 
+    Location sender = 1;
+    Location recipient = 2;
+
+    // data 
+    Pitot pitot = 3;
+    IMU imu = 4;
+    GPS gps = 5;
+    Enviro enviro = 6;
+    Battery battery = 7;
+}
+
+message Pitot {
+    float differential_pressure = 1;
+}
+
+message IMU {
+    float ax = 1;
+    float ay = 2;
+    float az = 3;
+    float gx = 4;
+    float gy = 5;
+    float gz = 6;
+    float mx = 7;
+    float my = 8;
+    float mz = 9;
+    float yaw = 10;
+    float pitch = 11;
+    float roll = 12;
+}
+
+message GPS {
+    bool fix = 1;
+    float lat = 2;
+    float lon = 3;
+    float speed = 4;
+    uint32 satellites = 5;
+    float altitude = 6;
+    uint32 time = 7;
+    uint32 date = 8;
+}
+
+message Enviro {
+    float altitude = 1;
+    float temperature = 2;
+    float pressure = 3;
+}
+
+message Battery {
+    float voltage = 1;
+    float current = 2;
+}
