@@ -8,16 +8,27 @@ message Message {
         GLIDER1 = 3;
         ANY = 4;
     }
+
+    enum Status {
+        POWER_ON = 0;
+        CALIBRATING = 1;
+        READY = 2;
+    }
     // Packet info 
     Location sender = 1;
-    Location recipient = 2;
+    Location recipient = 2; 
+    int32 packet_number = 3;
+    int64 time = 4;
+    Status status = 5;
 
     // data 
-    Pitot pitot = 3;
-    IMU imu = 4;
-    GPS gps = 5;
-    Enviro enviro = 6;
-    Battery battery = 7;
+    Pitot pitot = 6;
+    IMU imu = 7;
+    GPS gps = 8;
+    Enviro enviro = 9;
+    Battery battery = 10;
+    DropAlgorithm drop_algorithm = 11;
+    Glider glider = 12;
 }
 
 message Pitot {
@@ -59,4 +70,12 @@ message Enviro {
 message Battery {
     float voltage = 1;
     float current = 2;
+}
+
+message DropAlgorithm {
+    float time_to_drop = 1;
+}
+
+message Glider {
+    bool pitch_up = 1;
 }
