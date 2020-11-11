@@ -1,22 +1,18 @@
-include ../lib/nanopb-0.4.2/extra/nanopb.mk
+# Include the nanopb provided Makefile rules
+include nanopb.mk
 
 protofile ?= message.proto
 out ?= ../dist/
 
-CFLAGS = -Wall -Werror -g -O0
-CFLAGS += "-I$(NANOPB_DIR)"
-CSRC  = message.pb.c               # The compiled protocol definition
-CSRC += $(NANOPB_DIR)/pb_encode.c  # The nanopb encoder
-CSRC += $(NANOPB_DIR)/pb_decode.c  # The nanopb decoder
-CSRC += $(NANOPB_DIR)/pb_common.c  # The nanopb common parts
-
-build:
+message: message.proto
 	@echo "Compiling..."
 	@mkdir -p $(out)
-	@$(PROTOC) $(PROTOC_OPTS) ./message.proto --python_out=$(out) --nanopb_out=$(out)
+	@cp ../lib/nanopb-0.4.2/*.c $(out)
+	@cp ../lib/nanopb-0.4.2/*.h $(out)
+	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --python_out=$(out) $(protofile)
+	sed -i '/^#include/s/[<>]/"/g' $(out)/message.pb.h
 	@echo "Done."
 
 clean:
-	@echo "Removing distributions..."
 	@rm -rf $(out)
-	@echo "Done."
+	@echo "Removed compiled code."
