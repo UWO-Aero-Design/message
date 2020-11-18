@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Replace angle brackets
-        run: sed -i '/^#include/s/[<>]/"/g'
       - name: Build Library
         run: cd proto && make
+      - name: Replace angle brackets
+        run: sed -i '/^#include/s/[<>]/"/g' ./dist/message.pb.h
