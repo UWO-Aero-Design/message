@@ -7,6 +7,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Replace angle brackets
-        uses: sed -i '/^#include/s/[<>]/"/g'
+        run: sed -i '/^#include/s/[<>]/"/g'
       - name: Build Library
         run: cd proto && make
