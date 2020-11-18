@@ -10,7 +10,6 @@ message: message.proto
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
 	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --python_out=$(out) $(protofile)
-	sed -i '/^#include/s/[<>]/"/g' $(out)/message.pb.h
 	@echo "Done."
 
 clean:
