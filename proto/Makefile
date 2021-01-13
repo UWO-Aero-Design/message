@@ -9,7 +9,7 @@ message: message.proto
 	@mkdir -p $(out)
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
-	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=$(out) $(protofile)
+	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) $(protofile)
 	@echo "Done."
 
 clean:
