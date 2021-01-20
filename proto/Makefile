@@ -7,9 +7,9 @@ out ?= ../dist/
 message: message.proto
 	@echo "Compiling..."
 	@mkdir -p $(out)
+	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) $(protofile)
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
-	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) $(protofile)
 	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)/message.pb.h
 	@rm $(out)/*.bak
 	@echo "Done."
