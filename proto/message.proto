@@ -99,9 +99,15 @@ enum ServoBind {
     DOOR1 = 6;
 }
 
+enum ServoState {
+    OPEN = 0;
+    CLOSED = 1;
+}
+
 message Servo {
     uint32 number = 1;
     uint32 open = 2;
     uint32 close = 3;
     ServoBind bind = 4;
+    ServoState state = 5;
 }

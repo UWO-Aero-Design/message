@@ -24,6 +24,11 @@ typedef enum _ServoBind {
     ServoBind_DOOR1 = 6
 } ServoBind;
 
+typedef enum _ServoState {
+    ServoState_OPEN = 0,
+    ServoState_CLOSED = 1
+} ServoState;
+
 typedef enum _Message_Location {
     Message_Location_GROUND_STATION = 0,
     Message_Location_PLANE = 1,
@@ -100,6 +105,7 @@ typedef struct _Servo {
     uint32_t open;
     uint32_t close;
     ServoBind bind;
+    ServoState state;
 } Servo;
 
 typedef struct _Message {
@@ -132,6 +138,10 @@ typedef struct _Message {
 #define _ServoBind_MAX ServoBind_DOOR1
 #define _ServoBind_ARRAYSIZE ((ServoBind)(ServoBind_DOOR1+1))
 
+#define _ServoState_MIN ServoState_OPEN
+#define _ServoState_MAX ServoState_CLOSED
+#define _ServoState_ARRAYSIZE ((ServoState)(ServoState_CLOSED+1))
+
 #define _Message_Location_MIN Message_Location_GROUND_STATION
 #define _Message_Location_MAX Message_Location_ANY
 #define _Message_Location_ARRAYSIZE ((Message_Location)(Message_Location_ANY+1))
@@ -154,7 +164,7 @@ typedef struct _Message {
 #define Battery_init_default                     {0, 0}
 #define DropAlgorithm_init_default               {0}
 #define Glider_init_default                      {0}
-#define Servo_init_default                       {0, 0, 0, _ServoBind_MIN}
+#define Servo_init_default                       {0, 0, 0, _ServoBind_MIN, _ServoState_MIN}
 #define Message_init_zero                        {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_zero, false, IMU_init_zero, false, GPS_init_zero, false, Enviro_init_zero, false, Battery_init_zero, false, DropAlgorithm_init_zero, false, Glider_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Pitot_init_zero                          {0}
 #define IMU_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -163,7 +173,7 @@ typedef struct _Message {
 #define Battery_init_zero                        {0, 0}
 #define DropAlgorithm_init_zero                  {0}
 #define Glider_init_zero                         {0}
-#define Servo_init_zero                          {0, 0, 0, _ServoBind_MIN}
+#define Servo_init_zero                          {0, 0, 0, _ServoBind_MIN, _ServoState_MIN}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Battery_voltage_tag                      1
@@ -198,6 +208,7 @@ typedef struct _Message {
 #define Servo_open_tag                           2
 #define Servo_close_tag                          3
 #define Servo_bind_tag                           4
+#define Servo_state_tag                          5
 #define Message_sender_tag                       1
 #define Message_recipient_tag                    2
 #define Message_packet_number_tag                3
@@ -300,7 +311,8 @@ X(a, STATIC,   SINGULAR, BOOL,     pitch_up,          1)
 X(a, STATIC,   SINGULAR, UINT32,   number,            1) \
 X(a, STATIC,   SINGULAR, UINT32,   open,              2) \
 X(a, STATIC,   SINGULAR, UINT32,   close,             3) \
-X(a, STATIC,   SINGULAR, UENUM,    bind,              4)
+X(a, STATIC,   SINGULAR, UENUM,    bind,              4) \
+X(a, STATIC,   SINGULAR, UENUM,    state,             5)
 #define Servo_CALLBACK NULL
 #define Servo_DEFAULT NULL
 
@@ -334,7 +346,7 @@ extern const pb_msgdesc_t Servo_msg;
 #define Battery_size                             10
 #define DropAlgorithm_size                       5
 #define Glider_size                              2
-#define Servo_size                               20
+#define Servo_size                               22
 
 #ifdef __cplusplus
 } /* extern "C" */
