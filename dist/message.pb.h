@@ -44,10 +44,10 @@ typedef enum _Message_Status {
 } Message_Status;
 
 typedef enum _Message_Command {
-    Message_Command_open_doors = 0,
-    Message_Command_close_doors = 1,
-    Message_Command_drop_payloads = 2,
-    Message_Command_drop_gliders = 3
+    Message_Command_OPEN_DOORS = 0,
+    Message_Command_CLOSE_DOORS = 1,
+    Message_Command_DROP_PAYLOADS = 2,
+    Message_Command_DROP_GLIDERS = 3
 } Message_Command;
 
 /* Struct definitions */
@@ -150,9 +150,9 @@ typedef struct _Message {
 #define _Message_Status_MAX Message_Status_READY
 #define _Message_Status_ARRAYSIZE ((Message_Status)(Message_Status_READY+1))
 
-#define _Message_Command_MIN Message_Command_open_doors
-#define _Message_Command_MAX Message_Command_drop_gliders
-#define _Message_Command_ARRAYSIZE ((Message_Command)(Message_Command_drop_gliders+1))
+#define _Message_Command_MIN Message_Command_OPEN_DOORS
+#define _Message_Command_MAX Message_Command_DROP_GLIDERS
+#define _Message_Command_ARRAYSIZE ((Message_Command)(Message_Command_DROP_GLIDERS+1))
 
 
 /* Initializer values for message structs */

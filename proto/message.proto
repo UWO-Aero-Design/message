@@ -16,10 +16,10 @@ message Message {
     }
 
     enum Command {
-        open_doors = 0;
-        close_doors = 1;
-        drop_payloads = 2;
-        drop_gliders = 3;
+        OPEN_DOORS = 0;
+        CLOSE_DOORS = 1;
+        DROP_PAYLOADS = 2;
+        DROP_GLIDERS = 3;
     }
     // Packet info 
     Location sender = 1;
