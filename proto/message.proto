@@ -14,6 +14,13 @@ message Message {
         CALIBRATING = 1;
         READY = 2;
     }
+
+    enum Command {
+        open_doors = 0;
+        close_doors = 1;
+        drop_payloads = 2;
+        drop_gliders = 3;
+    }
     // Packet info 
     Location sender = 1;
     Location recipient = 2; 
@@ -29,6 +36,8 @@ message Message {
     Battery battery = 10;
     DropAlgorithm drop_algorithm = 11;
     Glider glider = 12;
+    repeated Command commands = 13;
+    repeated Servo servos = 14;
 }
 
 message Pitot {
@@ -78,4 +87,21 @@ message DropAlgorithm {
 
 message Glider {
     bool pitch_up = 1;
+}
+
+enum ServoBind {
+    PAYLOAD0 = 0;
+    PAYLOAD1 = 1;
+    PAYLOAD2 = 2;
+    GLIDER0 = 3;
+    GLIDER1 = 4;
+    DOOR0 = 5;
+    DOOR1 = 6;
+}
+
+message Servo {
+    uint32 number = 1;
+    uint32 open = 2;
+    uint32 close = 3;
+    ServoBind bind = 4;
 }

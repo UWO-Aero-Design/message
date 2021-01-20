@@ -3,7 +3,7 @@
 
 #ifndef PB_MESSAGE_PB_H_INCLUDED
 #define PB_MESSAGE_PB_H_INCLUDED
-#include <pb.h>
+#include "pb.h"
 
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.
@@ -14,6 +14,16 @@ extern "C" {
 #endif
 
 /* Enum definitions */
+typedef enum _ServoBind {
+    ServoBind_PAYLOAD0 = 0,
+    ServoBind_PAYLOAD1 = 1,
+    ServoBind_PAYLOAD2 = 2,
+    ServoBind_GLIDER0 = 3,
+    ServoBind_GLIDER1 = 4,
+    ServoBind_DOOR0 = 5,
+    ServoBind_DOOR1 = 6
+} ServoBind;
+
 typedef enum _Message_Location {
     Message_Location_GROUND_STATION = 0,
     Message_Location_PLANE = 1,
@@ -27,6 +37,13 @@ typedef enum _Message_Status {
     Message_Status_CALIBRATING = 1,
     Message_Status_READY = 2
 } Message_Status;
+
+typedef enum _Message_Command {
+    Message_Command_open_doors = 0,
+    Message_Command_close_doors = 1,
+    Message_Command_drop_payloads = 2,
+    Message_Command_drop_gliders = 3
+} Message_Command;
 
 /* Struct definitions */
 typedef struct _Battery {
@@ -78,6 +95,13 @@ typedef struct _Pitot {
     float differential_pressure;
 } Pitot;
 
+typedef struct _Servo {
+    uint32_t number;
+    uint32_t open;
+    uint32_t close;
+    ServoBind bind;
+} Servo;
+
 typedef struct _Message {
     Message_Location sender;
     Message_Location recipient;
@@ -98,10 +122,16 @@ typedef struct _Message {
     DropAlgorithm drop_algorithm;
     bool has_glider;
     Glider glider;
+    pb_callback_t commands;
+    pb_callback_t servos;
 } Message;
 
 
 /* Helper constants for enums */
+#define _ServoBind_MIN ServoBind_PAYLOAD0
+#define _ServoBind_MAX ServoBind_DOOR1
+#define _ServoBind_ARRAYSIZE ((ServoBind)(ServoBind_DOOR1+1))
+
 #define _Message_Location_MIN Message_Location_GROUND_STATION
 #define _Message_Location_MAX Message_Location_ANY
 #define _Message_Location_ARRAYSIZE ((Message_Location)(Message_Location_ANY+1))
@@ -110,9 +140,13 @@ typedef struct _Message {
 #define _Message_Status_MAX Message_Status_READY
 #define _Message_Status_ARRAYSIZE ((Message_Status)(Message_Status_READY+1))
 
+#define _Message_Command_MIN Message_Command_open_doors
+#define _Message_Command_MAX Message_Command_drop_gliders
+#define _Message_Command_ARRAYSIZE ((Message_Command)(Message_Command_drop_gliders+1))
+
 
 /* Initializer values for message structs */
-#define Message_init_default                     {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_default, false, IMU_init_default, false, GPS_init_default, false, Enviro_init_default, false, Battery_init_default, false, DropAlgorithm_init_default, false, Glider_init_default}
+#define Message_init_default                     {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_default, false, IMU_init_default, false, GPS_init_default, false, Enviro_init_default, false, Battery_init_default, false, DropAlgorithm_init_default, false, Glider_init_default, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Pitot_init_default                       {0}
 #define IMU_init_default                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define GPS_init_default                         {0, 0, 0, 0, 0, 0, 0, 0}
@@ -120,7 +154,8 @@ typedef struct _Message {
 #define Battery_init_default                     {0, 0}
 #define DropAlgorithm_init_default               {0}
 #define Glider_init_default                      {0}
-#define Message_init_zero                        {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_zero, false, IMU_init_zero, false, GPS_init_zero, false, Enviro_init_zero, false, Battery_init_zero, false, DropAlgorithm_init_zero, false, Glider_init_zero}
+#define Servo_init_default                       {0, 0, 0, _ServoBind_MIN}
+#define Message_init_zero                        {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_zero, false, IMU_init_zero, false, GPS_init_zero, false, Enviro_init_zero, false, Battery_init_zero, false, DropAlgorithm_init_zero, false, Glider_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Pitot_init_zero                          {0}
 #define IMU_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define GPS_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0}
@@ -128,6 +163,7 @@ typedef struct _Message {
 #define Battery_init_zero                        {0, 0}
 #define DropAlgorithm_init_zero                  {0}
 #define Glider_init_zero                         {0}
+#define Servo_init_zero                          {0, 0, 0, _ServoBind_MIN}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Battery_voltage_tag                      1
@@ -158,6 +194,10 @@ typedef struct _Message {
 #define IMU_pitch_tag                            11
 #define IMU_roll_tag                             12
 #define Pitot_differential_pressure_tag          1
+#define Servo_number_tag                         1
+#define Servo_open_tag                           2
+#define Servo_close_tag                          3
+#define Servo_bind_tag                           4
 #define Message_sender_tag                       1
 #define Message_recipient_tag                    2
 #define Message_packet_number_tag                3
@@ -170,6 +210,8 @@ typedef struct _Message {
 #define Message_battery_tag                      10
 #define Message_drop_algorithm_tag               11
 #define Message_glider_tag                       12
+#define Message_commands_tag                     13
+#define Message_servos_tag                       14
 
 /* Struct field encoding specification for nanopb */
 #define Message_FIELDLIST(X, a) \
@@ -184,8 +226,10 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  gps,               8) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  enviro,            9) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  battery,          10) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  drop_algorithm,   11) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  glider,           12)
-#define Message_CALLBACK NULL
+X(a, STATIC,   OPTIONAL, MESSAGE,  glider,           12) \
+X(a, CALLBACK, REPEATED, UENUM,    commands,         13) \
+X(a, CALLBACK, REPEATED, MESSAGE,  servos,           14)
+#define Message_CALLBACK pb_default_field_callback
 #define Message_DEFAULT NULL
 #define Message_pitot_MSGTYPE Pitot
 #define Message_imu_MSGTYPE IMU
@@ -194,6 +238,7 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  glider,           12)
 #define Message_battery_MSGTYPE Battery
 #define Message_drop_algorithm_MSGTYPE DropAlgorithm
 #define Message_glider_MSGTYPE Glider
+#define Message_servos_MSGTYPE Servo
 
 #define Pitot_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, FLOAT,    differential_pressure,   1)
@@ -251,6 +296,14 @@ X(a, STATIC,   SINGULAR, BOOL,     pitch_up,          1)
 #define Glider_CALLBACK NULL
 #define Glider_DEFAULT NULL
 
+#define Servo_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   number,            1) \
+X(a, STATIC,   SINGULAR, UINT32,   open,              2) \
+X(a, STATIC,   SINGULAR, UINT32,   close,             3) \
+X(a, STATIC,   SINGULAR, UENUM,    bind,              4)
+#define Servo_CALLBACK NULL
+#define Servo_DEFAULT NULL
+
 extern const pb_msgdesc_t Message_msg;
 extern const pb_msgdesc_t Pitot_msg;
 extern const pb_msgdesc_t IMU_msg;
@@ -259,6 +312,7 @@ extern const pb_msgdesc_t Enviro_msg;
 extern const pb_msgdesc_t Battery_msg;
 extern const pb_msgdesc_t DropAlgorithm_msg;
 extern const pb_msgdesc_t Glider_msg;
+extern const pb_msgdesc_t Servo_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define Message_fields &Message_msg
@@ -269,9 +323,10 @@ extern const pb_msgdesc_t Glider_msg;
 #define Battery_fields &Battery_msg
 #define DropAlgorithm_fields &DropAlgorithm_msg
 #define Glider_fields &Glider_msg
+#define Servo_fields &Servo_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Message_size                             179
+/* Message_size depends on runtime parameters */
 #define Pitot_size                               5
 #define IMU_size                                 60
 #define GPS_size                                 40
@@ -279,6 +334,7 @@ extern const pb_msgdesc_t Glider_msg;
 #define Battery_size                             10
 #define DropAlgorithm_size                       5
 #define Glider_size                              2
+#define Servo_size                               20
 
 #ifdef __cplusplus
 } /* extern "C" */
