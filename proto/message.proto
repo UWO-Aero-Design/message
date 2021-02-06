@@ -21,23 +21,30 @@ message Message {
         DROP_PAYLOADS = 2;
         DROP_GLIDERS = 3;
     }
+
+    enum FlightStabilization {
+        NONE = 0;
+        WEIGHTED_AVERAGE = 1;
+    }
+
     // Packet info 
     Location sender = 1;
     Location recipient = 2; 
     int32 packet_number = 3;
     int64 time = 4;
     Status status = 5;
+    int32 rssi = 6;
 
     // data 
-    Pitot pitot = 6;
-    IMU imu = 7;
-    GPS gps = 8;
-    Enviro enviro = 9;
-    Battery battery = 10;
-    DropAlgorithm drop_algorithm = 11;
-    Glider glider = 12;
-    repeated Command commands = 13;
-    repeated Servo servos = 14;
+    Pitot pitot = 7;
+    IMU imu = 8;
+    GPS gps = 9;
+    Enviro enviro = 10;
+    Battery battery = 11;
+    FlightStabilization flight_stabilization = 12;
+    Glider glider = 13;
+    repeated Command commands = 14;
+    repeated Servo servos = 15;
 }
 
 message Pitot {
@@ -68,6 +75,8 @@ message GPS {
     float altitude = 6;
     uint32 time = 7;
     uint32 date = 8;
+    uint32 HDOP = 9;
+    uint32 quality = 10;
 }
 
 message Enviro {
@@ -79,10 +88,6 @@ message Enviro {
 message Battery {
     float voltage = 1;
     float current = 2;
-}
-
-message DropAlgorithm {
-    float time_to_drop = 1;
 }
 
 message Glider {

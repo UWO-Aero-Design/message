@@ -50,15 +50,16 @@ typedef enum _Message_Command {
     Message_Command_DROP_GLIDERS = 3
 } Message_Command;
 
+typedef enum _Message_FlightStabilization {
+    Message_FlightStabilization_NONE = 0,
+    Message_FlightStabilization_WEIGHTED_AVERAGE = 1
+} Message_FlightStabilization;
+
 /* Struct definitions */
 typedef struct _Battery {
     float voltage;
     float current;
 } Battery;
-
-typedef struct _DropAlgorithm {
-    float time_to_drop;
-} DropAlgorithm;
 
 typedef struct _Enviro {
     float altitude;
@@ -75,6 +76,8 @@ typedef struct _GPS {
     float altitude;
     uint32_t time;
     uint32_t date;
+    uint32_t HDOP;
+    uint32_t quality;
 } GPS;
 
 typedef struct _Glider {
@@ -114,6 +117,7 @@ typedef struct _Message {
     int32_t packet_number;
     int64_t time;
     Message_Status status;
+    int32_t rssi;
     bool has_pitot;
     Pitot pitot;
     bool has_imu;
@@ -124,8 +128,7 @@ typedef struct _Message {
     Enviro enviro;
     bool has_battery;
     Battery battery;
-    bool has_drop_algorithm;
-    DropAlgorithm drop_algorithm;
+    Message_FlightStabilization flight_stabilization;
     bool has_glider;
     Glider glider;
     pb_callback_t commands;
@@ -154,31 +157,32 @@ typedef struct _Message {
 #define _Message_Command_MAX Message_Command_DROP_GLIDERS
 #define _Message_Command_ARRAYSIZE ((Message_Command)(Message_Command_DROP_GLIDERS+1))
 
+#define _Message_FlightStabilization_MIN Message_FlightStabilization_NONE
+#define _Message_FlightStabilization_MAX Message_FlightStabilization_WEIGHTED_AVERAGE
+#define _Message_FlightStabilization_ARRAYSIZE ((Message_FlightStabilization)(Message_FlightStabilization_WEIGHTED_AVERAGE+1))
+
 
 /* Initializer values for message structs */
-#define Message_init_default                     {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_default, false, IMU_init_default, false, GPS_init_default, false, Enviro_init_default, false, Battery_init_default, false, DropAlgorithm_init_default, false, Glider_init_default, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Message_init_default                     {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, 0, false, Pitot_init_default, false, IMU_init_default, false, GPS_init_default, false, Enviro_init_default, false, Battery_init_default, _Message_FlightStabilization_MIN, false, Glider_init_default, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Pitot_init_default                       {0}
 #define IMU_init_default                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-#define GPS_init_default                         {0, 0, 0, 0, 0, 0, 0, 0}
+#define GPS_init_default                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define Enviro_init_default                      {0, 0, 0}
 #define Battery_init_default                     {0, 0}
-#define DropAlgorithm_init_default               {0}
 #define Glider_init_default                      {0}
 #define Servo_init_default                       {0, 0, 0, _ServoBind_MIN, _ServoState_MIN}
-#define Message_init_zero                        {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, false, Pitot_init_zero, false, IMU_init_zero, false, GPS_init_zero, false, Enviro_init_zero, false, Battery_init_zero, false, DropAlgorithm_init_zero, false, Glider_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Message_init_zero                        {_Message_Location_MIN, _Message_Location_MIN, 0, 0, _Message_Status_MIN, 0, false, Pitot_init_zero, false, IMU_init_zero, false, GPS_init_zero, false, Enviro_init_zero, false, Battery_init_zero, _Message_FlightStabilization_MIN, false, Glider_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
 #define Pitot_init_zero                          {0}
 #define IMU_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-#define GPS_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0}
+#define GPS_init_zero                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define Enviro_init_zero                         {0, 0, 0}
 #define Battery_init_zero                        {0, 0}
-#define DropAlgorithm_init_zero                  {0}
 #define Glider_init_zero                         {0}
 #define Servo_init_zero                          {0, 0, 0, _ServoBind_MIN, _ServoState_MIN}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Battery_voltage_tag                      1
 #define Battery_current_tag                      2
-#define DropAlgorithm_time_to_drop_tag           1
 #define Enviro_altitude_tag                      1
 #define Enviro_temperature_tag                   2
 #define Enviro_pressure_tag                      3
@@ -190,6 +194,8 @@ typedef struct _Message {
 #define GPS_altitude_tag                         6
 #define GPS_time_tag                             7
 #define GPS_date_tag                             8
+#define GPS_HDOP_tag                             9
+#define GPS_quality_tag                          10
 #define Glider_pitch_up_tag                      1
 #define IMU_ax_tag                               1
 #define IMU_ay_tag                               2
@@ -214,15 +220,16 @@ typedef struct _Message {
 #define Message_packet_number_tag                3
 #define Message_time_tag                         4
 #define Message_status_tag                       5
-#define Message_pitot_tag                        6
-#define Message_imu_tag                          7
-#define Message_gps_tag                          8
-#define Message_enviro_tag                       9
-#define Message_battery_tag                      10
-#define Message_drop_algorithm_tag               11
-#define Message_glider_tag                       12
-#define Message_commands_tag                     13
-#define Message_servos_tag                       14
+#define Message_rssi_tag                         6
+#define Message_pitot_tag                        7
+#define Message_imu_tag                          8
+#define Message_gps_tag                          9
+#define Message_enviro_tag                       10
+#define Message_battery_tag                      11
+#define Message_flight_stabilization_tag         12
+#define Message_glider_tag                       13
+#define Message_commands_tag                     14
+#define Message_servos_tag                       15
 
 /* Struct field encoding specification for nanopb */
 #define Message_FIELDLIST(X, a) \
@@ -231,15 +238,16 @@ X(a, STATIC,   SINGULAR, UENUM,    recipient,         2) \
 X(a, STATIC,   SINGULAR, INT32,    packet_number,     3) \
 X(a, STATIC,   SINGULAR, INT64,    time,              4) \
 X(a, STATIC,   SINGULAR, UENUM,    status,            5) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  pitot,             6) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  imu,               7) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  gps,               8) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  enviro,            9) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  battery,          10) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  drop_algorithm,   11) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  glider,           12) \
-X(a, CALLBACK, REPEATED, UENUM,    commands,         13) \
-X(a, CALLBACK, REPEATED, MESSAGE,  servos,           14)
+X(a, STATIC,   SINGULAR, INT32,    rssi,              6) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  pitot,             7) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  imu,               8) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  gps,               9) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  enviro,           10) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  battery,          11) \
+X(a, STATIC,   SINGULAR, UENUM,    flight_stabilization,  12) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  glider,           13) \
+X(a, CALLBACK, REPEATED, UENUM,    commands,         14) \
+X(a, CALLBACK, REPEATED, MESSAGE,  servos,           15)
 #define Message_CALLBACK pb_default_field_callback
 #define Message_DEFAULT NULL
 #define Message_pitot_MSGTYPE Pitot
@@ -247,7 +255,6 @@ X(a, CALLBACK, REPEATED, MESSAGE,  servos,           14)
 #define Message_gps_MSGTYPE GPS
 #define Message_enviro_MSGTYPE Enviro
 #define Message_battery_MSGTYPE Battery
-#define Message_drop_algorithm_MSGTYPE DropAlgorithm
 #define Message_glider_MSGTYPE Glider
 #define Message_servos_MSGTYPE Servo
 
@@ -280,7 +287,9 @@ X(a, STATIC,   SINGULAR, FLOAT,    speed,             4) \
 X(a, STATIC,   SINGULAR, UINT32,   satellites,        5) \
 X(a, STATIC,   SINGULAR, FLOAT,    altitude,          6) \
 X(a, STATIC,   SINGULAR, UINT32,   time,              7) \
-X(a, STATIC,   SINGULAR, UINT32,   date,              8)
+X(a, STATIC,   SINGULAR, UINT32,   date,              8) \
+X(a, STATIC,   SINGULAR, UINT32,   HDOP,              9) \
+X(a, STATIC,   SINGULAR, UINT32,   quality,          10)
 #define GPS_CALLBACK NULL
 #define GPS_DEFAULT NULL
 
@@ -296,11 +305,6 @@ X(a, STATIC,   SINGULAR, FLOAT,    voltage,           1) \
 X(a, STATIC,   SINGULAR, FLOAT,    current,           2)
 #define Battery_CALLBACK NULL
 #define Battery_DEFAULT NULL
-
-#define DropAlgorithm_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, FLOAT,    time_to_drop,      1)
-#define DropAlgorithm_CALLBACK NULL
-#define DropAlgorithm_DEFAULT NULL
 
 #define Glider_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, BOOL,     pitch_up,          1)
@@ -322,7 +326,6 @@ extern const pb_msgdesc_t IMU_msg;
 extern const pb_msgdesc_t GPS_msg;
 extern const pb_msgdesc_t Enviro_msg;
 extern const pb_msgdesc_t Battery_msg;
-extern const pb_msgdesc_t DropAlgorithm_msg;
 extern const pb_msgdesc_t Glider_msg;
 extern const pb_msgdesc_t Servo_msg;
 
@@ -333,7 +336,6 @@ extern const pb_msgdesc_t Servo_msg;
 #define GPS_fields &GPS_msg
 #define Enviro_fields &Enviro_msg
 #define Battery_fields &Battery_msg
-#define DropAlgorithm_fields &DropAlgorithm_msg
 #define Glider_fields &Glider_msg
 #define Servo_fields &Servo_msg
 
@@ -341,10 +343,9 @@ extern const pb_msgdesc_t Servo_msg;
 /* Message_size depends on runtime parameters */
 #define Pitot_size                               5
 #define IMU_size                                 60
-#define GPS_size                                 40
+#define GPS_size                                 52
 #define Enviro_size                              15
 #define Battery_size                             10
-#define DropAlgorithm_size                       5
 #define Glider_size                              2
 #define Servo_size                               22
 

@@ -24,13 +24,11 @@ PB_BIND(Enviro, Enviro, AUTO)
 PB_BIND(Battery, Battery, AUTO)
 
 
-PB_BIND(DropAlgorithm, DropAlgorithm, AUTO)
-
-
 PB_BIND(Glider, Glider, AUTO)
 
 
 PB_BIND(Servo, Servo, AUTO)
+
 
 
 
