@@ -27,8 +27,10 @@ message FlightStabilization {
 
 message ActuateServo {
     repeated uint32 servo_number = 1;
-    ServoState state = 2; // mutally exclusive to value
-    int32 value = 3; // mutally exclusive to state, value will always supersede 
+    oneof arg {
+        ServoState state = 2;
+        int32 value = 3;
+    }
 }
 
 message ServoConfig {

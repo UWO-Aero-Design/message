@@ -16,6 +16,7 @@ var header_pb = require('./header_pb.js');
 goog.object.extend(proto, header_pb);
 goog.exportSymbol('proto.ActuateGroup', null, global);
 goog.exportSymbol('proto.ActuateServo', null, global);
+goog.exportSymbol('proto.ActuateServo.ArgCase', null, global);
 goog.exportSymbol('proto.Command', null, global);
 goog.exportSymbol('proto.FlightStabilization', null, global);
 goog.exportSymbol('proto.FlightStabilizationMethods', null, global);
@@ -98,7 +99,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.ActuateServo = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.ActuateServo.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.ActuateServo.repeatedFields_, proto.ActuateServo.oneofGroups_);
 };
 goog.inherits(proto.ActuateServo, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -927,6 +928,32 @@ proto.FlightStabilization.prototype.setArgs = function(value) {
  */
 proto.ActuateServo.repeatedFields_ = [1];
 
+/**
+ * Oneof group definitions for this message. Each group defines the field
+ * numbers belonging to that group. When of these fields' value is set, all
+ * other fields in the group are cleared. During deserialization, if multiple
+ * fields are encountered for a group, only the last value seen will be kept.
+ * @private {!Array<!Array<number>>}
+ * @const
+ */
+proto.ActuateServo.oneofGroups_ = [[2,3]];
+
+/**
+ * @enum {number}
+ */
+proto.ActuateServo.ArgCase = {
+  ARG_NOT_SET: 0,
+  STATE: 2,
+  VALUE: 3
+};
+
+/**
+ * @return {proto.ActuateServo.ArgCase}
+ */
+proto.ActuateServo.prototype.getArgCase = function() {
+  return /** @type {proto.ActuateServo.ArgCase} */(jspb.Message.computeOneofCase(this, proto.ActuateServo.oneofGroups_[0]));
+};
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1045,15 +1072,15 @@ proto.ActuateServo.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getState();
-  if (f !== 0.0) {
+  f = /** @type {!proto.ServoState} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
     writer.writeEnum(
       2,
       f
     );
   }
-  f = message.getValue();
-  if (f !== 0) {
+  f = /** @type {number} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
     writer.writeInt32(
       3,
       f
@@ -1113,7 +1140,25 @@ proto.ActuateServo.prototype.getState = function() {
  * @return {!proto.ActuateServo} returns this
  */
 proto.ActuateServo.prototype.setState = function(value) {
-  return jspb.Message.setProto3EnumField(this, 2, value);
+  return jspb.Message.setOneofField(this, 2, proto.ActuateServo.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ActuateServo} returns this
+ */
+proto.ActuateServo.prototype.clearState = function() {
+  return jspb.Message.setOneofField(this, 2, proto.ActuateServo.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ActuateServo.prototype.hasState = function() {
+  return jspb.Message.getField(this, 2) != null;
 };
 
 
@@ -1131,7 +1176,25 @@ proto.ActuateServo.prototype.getValue = function() {
  * @return {!proto.ActuateServo} returns this
  */
 proto.ActuateServo.prototype.setValue = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setOneofField(this, 3, proto.ActuateServo.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.ActuateServo} returns this
+ */
+proto.ActuateServo.prototype.clearValue = function() {
+  return jspb.Message.setOneofField(this, 3, proto.ActuateServo.oneofGroups_[0], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ActuateServo.prototype.hasValue = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

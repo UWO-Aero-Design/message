@@ -42,8 +42,11 @@ typedef struct _ActuateGroup {
 
 typedef struct _ActuateServo {
     pb_callback_t servo_number;
-    ServoState state;
-    int32_t value;
+    pb_size_t which_arg;
+    union {
+        ServoState state;
+        int32_t value;
+    } arg;
 } ActuateServo;
 
 typedef struct _FlightStabilization {
@@ -99,13 +102,13 @@ typedef struct _Command {
 #define Command_init_default                     {false, Header_init_default, 0, false, ActuateGroup_init_default, false, FlightStabilization_init_default, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_default                {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_default         {_FlightStabilizationMethods_MIN, 0}
-#define ActuateServo_init_default                {{{NULL}, NULL}, _ServoState_MIN, 0}
+#define ActuateServo_init_default                {{{NULL}, NULL}, 0, {_ServoState_MIN}}
 #define ServoConfig_init_default                 {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
 #define Recallibrate_init_default                {_Sensor_MIN}
 #define Command_init_zero                        {false, Header_init_zero, 0, false, ActuateGroup_init_zero, false, FlightStabilization_init_zero, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_zero                   {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_zero            {_FlightStabilizationMethods_MIN, 0}
-#define ActuateServo_init_zero                   {{{NULL}, NULL}, _ServoState_MIN, 0}
+#define ActuateServo_init_zero                   {{{NULL}, NULL}, 0, {_ServoState_MIN}}
 #define ServoConfig_init_zero                    {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
 #define Recallibrate_init_zero                   {_Sensor_MIN}
 
@@ -163,8 +166,8 @@ X(a, STATIC,   SINGULAR, UINT32,   args,              2)
 
 #define ActuateServo_FIELDLIST(X, a) \
 X(a, CALLBACK, REPEATED, UINT32,   servo_number,      1) \
-X(a, STATIC,   SINGULAR, UENUM,    state,             2) \
-X(a, STATIC,   SINGULAR, INT32,    value,             3)
+X(a, STATIC,   ONEOF,    ENUM,     (arg,state,arg.state),   2) \
+X(a, STATIC,   ONEOF,    INT32,    (arg,value,arg.value),   3)
 #define ActuateServo_CALLBACK pb_default_field_callback
 #define ActuateServo_DEFAULT NULL
 
