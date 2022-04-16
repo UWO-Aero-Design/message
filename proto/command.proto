@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "header.proto";
+
+message Command {
+
+    Header header = 1;
+
+    // commands 
+    bool reset_processor = 2;
+    ActuateGroup actuate_group = 3;
+    FlightStabilization flight_stabilization = 4;
+    repeated ActuateServo actuate_servo = 5;
+    repeated ServoConfig servo_config = 6;
+    repeated Recallibrate recallibrate = 7;
+}
+
+message ActuateGroup {
+    ServoGroup group = 1;
+    ServoState state = 2;
+}
+
+message FlightStabilization {
+    FlightStabilizationMethods method = 1;
+    uint32 args = 2;
+}
+
+message ActuateServo {
+    repeated uint32 servo_number = 1;
+    ServoState state = 2; // mutally exclusive to value
+    int32 value = 3; // mutally exclusive to state, value will always supersede 
+}
+
+message ServoConfig {
+    uint32 index = 1;
+    uint32 open = 2;
+    uint32 close = 3;
+    ServoGroup group = 4;
+    ServoState state = 5;
+}
+
+message Recallibrate {
+    Sensor sensor = 1;
+}
+
+enum Sensor {
+    IMU = 0;
+    ENVIRO = 1;
+}
+
+enum ServoGroup {
+    DROP_PADA = 0;
+}
+
+enum ServoState {
+    OPEN = 0;
+    CLOSE = 1;
+}
+
+enum FlightStabilizationMethods {
+    NONE = 0;
+    WEIGHTED_AVERAGE = 1;
+}

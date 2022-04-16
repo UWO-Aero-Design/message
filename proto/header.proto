@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message Header {
+    Location sender = 1;
+    Location recipient = 2; 
+    int32 packet_number = 3;
+    int64 time = 4;
+    Status status = 5;
+}
+
+enum Location {
+    GROUND_STATION = 0;
+    PLANE = 1;
+    GLIDER0 = 2;
+    GLIDER1 = 3;
+    ANY = 4;
+}
+
+enum Status {
+    POWER_ON = 0;
+    CALIBRATING = 1;
+    READY = 2;
+}

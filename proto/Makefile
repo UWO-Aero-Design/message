@@ -1,16 +1,15 @@
 # Include the nanopb provided Makefile rules
 include nanopb.mk
 
-protofile ?= message.proto
 out ?= ../dist/
 
-message: message.proto
+protos: telemetry.proto command.proto
 	@echo "Compiling..."
 	@mkdir -p $(out)
-	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) $(protofile)
+	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) telemetry.proto command.proto
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
-	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)/message.pb.h
+	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)telemetry.pb.h $(out)command.pb.h
 	@rm $(out)/*.bak
 	@echo "Done."
 

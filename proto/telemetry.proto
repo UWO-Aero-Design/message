@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "header.proto";
+import "sensors.proto";
+
+message Telemetry {
+
+    Header header = 1;
+
+    // data 
+    ImuData imu = 2;
+    GpsData gps = 3;
+    EnviroData enviro = 4;
+    BatteryData battery = 5;
+    RadioData radio = 6;
+}
+
