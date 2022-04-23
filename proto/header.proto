@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message Header {
+    Location sender = 1;
+    Location receiver = 2; 
+    int32 packet_number = 3;
+    int64 time = 4;
+    Status status = 5;
+}
+
+enum Location {
+    GROUND_STATION = 0;
+    PLANE = 1;
+    ANY = 2;
+}
+
+enum Status {
+    READY = 0;
+    PADA_ARMED = 1;
+}

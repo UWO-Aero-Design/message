@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+message ImuData {
+    float ax = 1;
+    float ay = 2;
+    float az = 3;
+    float gx = 4;
+    float gy = 5;
+    float gz = 6;
+    float mx = 7;
+    float my = 8;
+    float mz = 9;
+    float yaw = 10;
+    float pitch = 11;
+    float roll = 12;
+}
+
+message GpsData {
+    bool fix = 1;
+    float lat = 2;
+    float lon = 3;
+    float speed = 4;
+    uint32 satellites = 5;
+    float altitude = 6;
+    uint32 time = 7;
+    uint32 date = 8;
+    uint32 hdop = 9;
+    uint32 quality = 10;
+}
+
+message EnviroData {
+    float altitude = 1;
+    float temperature = 2;
+    float pressure = 3;
+}
+
+message BatteryData {
+    float voltage = 1;
+    float current = 2;
+}
+
+message RadioData {
+    float rssi = 1;
+    int32 frequency_error = 2;
+    int32 snr = 3;
+}
