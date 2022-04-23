@@ -54,10 +54,6 @@ typedef struct _FlightStabilization {
     uint32_t args;
 } FlightStabilization;
 
-typedef struct _Recallibrate {
-    Sensor sensor;
-} Recallibrate;
-
 typedef struct _ServoConfig {
     uint32_t index;
     uint32_t open;
@@ -76,7 +72,6 @@ typedef struct _Command {
     FlightStabilization flight_stabilization;
     pb_callback_t actuate_servo;
     pb_callback_t servo_config;
-    pb_callback_t recallibrate;
 } Command;
 
 
@@ -99,18 +94,16 @@ typedef struct _Command {
 
 
 /* Initializer values for message structs */
-#define Command_init_default                     {false, Header_init_default, 0, false, ActuateGroup_init_default, false, FlightStabilization_init_default, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Command_init_default                     {false, Header_init_default, 0, false, ActuateGroup_init_default, false, FlightStabilization_init_default, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_default                {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_default         {_FlightStabilizationMethods_MIN, 0}
 #define ActuateServo_init_default                {{{NULL}, NULL}, 0, {_ServoState_MIN}}
 #define ServoConfig_init_default                 {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
-#define Recallibrate_init_default                {_Sensor_MIN}
-#define Command_init_zero                        {false, Header_init_zero, 0, false, ActuateGroup_init_zero, false, FlightStabilization_init_zero, {{NULL}, NULL}, {{NULL}, NULL}, {{NULL}, NULL}}
+#define Command_init_zero                        {false, Header_init_zero, 0, false, ActuateGroup_init_zero, false, FlightStabilization_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_zero                   {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_zero            {_FlightStabilizationMethods_MIN, 0}
 #define ActuateServo_init_zero                   {{{NULL}, NULL}, 0, {_ServoState_MIN}}
 #define ServoConfig_init_zero                    {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
-#define Recallibrate_init_zero                   {_Sensor_MIN}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define ActuateGroup_group_tag                   1
@@ -120,7 +113,6 @@ typedef struct _Command {
 #define ActuateServo_value_tag                   3
 #define FlightStabilization_method_tag           1
 #define FlightStabilization_args_tag             2
-#define Recallibrate_sensor_tag                  1
 #define ServoConfig_index_tag                    1
 #define ServoConfig_open_tag                     2
 #define ServoConfig_close_tag                    3
@@ -132,7 +124,6 @@ typedef struct _Command {
 #define Command_flight_stabilization_tag         4
 #define Command_actuate_servo_tag                5
 #define Command_servo_config_tag                 6
-#define Command_recallibrate_tag                 7
 
 /* Struct field encoding specification for nanopb */
 #define Command_FIELDLIST(X, a) \
@@ -141,8 +132,7 @@ X(a, STATIC,   SINGULAR, BOOL,     reset_processor,   2) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  actuate_group,     3) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  flight_stabilization,   4) \
 X(a, CALLBACK, REPEATED, MESSAGE,  actuate_servo,     5) \
-X(a, CALLBACK, REPEATED, MESSAGE,  servo_config,      6) \
-X(a, CALLBACK, REPEATED, MESSAGE,  recallibrate,      7)
+X(a, CALLBACK, REPEATED, MESSAGE,  servo_config,      6)
 #define Command_CALLBACK pb_default_field_callback
 #define Command_DEFAULT NULL
 #define Command_header_MSGTYPE Header
@@ -150,7 +140,6 @@ X(a, CALLBACK, REPEATED, MESSAGE,  recallibrate,      7)
 #define Command_flight_stabilization_MSGTYPE FlightStabilization
 #define Command_actuate_servo_MSGTYPE ActuateServo
 #define Command_servo_config_MSGTYPE ServoConfig
-#define Command_recallibrate_MSGTYPE Recallibrate
 
 #define ActuateGroup_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UENUM,    group,             1) \
@@ -180,17 +169,11 @@ X(a, STATIC,   SINGULAR, UENUM,    state,             5)
 #define ServoConfig_CALLBACK NULL
 #define ServoConfig_DEFAULT NULL
 
-#define Recallibrate_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, UENUM,    sensor,            1)
-#define Recallibrate_CALLBACK NULL
-#define Recallibrate_DEFAULT NULL
-
 extern const pb_msgdesc_t Command_msg;
 extern const pb_msgdesc_t ActuateGroup_msg;
 extern const pb_msgdesc_t FlightStabilization_msg;
 extern const pb_msgdesc_t ActuateServo_msg;
 extern const pb_msgdesc_t ServoConfig_msg;
-extern const pb_msgdesc_t Recallibrate_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define Command_fields &Command_msg
@@ -198,7 +181,6 @@ extern const pb_msgdesc_t Recallibrate_msg;
 #define FlightStabilization_fields &FlightStabilization_msg
 #define ActuateServo_fields &ActuateServo_msg
 #define ServoConfig_fields &ServoConfig_msg
-#define Recallibrate_fields &Recallibrate_msg
 
 /* Maximum encoded size of messages (where known) */
 /* Command_size depends on runtime parameters */
@@ -206,7 +188,6 @@ extern const pb_msgdesc_t Recallibrate_msg;
 #define FlightStabilization_size                 8
 /* ActuateServo_size depends on runtime parameters */
 #define ServoConfig_size                         22
-#define Recallibrate_size                        2
 
 #ifdef __cplusplus
 } /* extern "C" */

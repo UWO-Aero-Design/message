@@ -21,9 +21,6 @@ PB_BIND(ActuateServo, ActuateServo, AUTO)
 PB_BIND(ServoConfig, ServoConfig, AUTO)
 
 
-PB_BIND(Recallibrate, Recallibrate, AUTO)
-
-
 
 
 

@@ -12,7 +12,6 @@ message Command {
     FlightStabilization flight_stabilization = 4;
     repeated ActuateServo actuate_servo = 5;
     repeated ServoConfig servo_config = 6;
-    repeated Recallibrate recallibrate = 7;
 }
 
 message ActuateGroup {
@@ -39,10 +38,6 @@ message ServoConfig {
     uint32 close = 3;
     ServoGroup group = 4;
     ServoState state = 5;
-}
-
-message Recallibrate {
-    Sensor sensor = 1;
 }
 
 enum Sensor {
