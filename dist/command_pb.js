@@ -20,7 +20,6 @@ goog.exportSymbol('proto.ActuateServo.ArgCase', null, global);
 goog.exportSymbol('proto.Command', null, global);
 goog.exportSymbol('proto.FlightStabilization', null, global);
 goog.exportSymbol('proto.FlightStabilizationMethods', null, global);
-goog.exportSymbol('proto.Sensor', null, global);
 goog.exportSymbol('proto.ServoConfig', null, global);
 goog.exportSymbol('proto.ServoGroup', null, global);
 goog.exportSymbol('proto.ServoState', null, global);
@@ -98,7 +97,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.ActuateServo = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.ActuateServo.repeatedFields_, proto.ActuateServo.oneofGroups_);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.ActuateServo.oneofGroups_);
 };
 goog.inherits(proto.ActuateServo, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -847,13 +846,6 @@ proto.FlightStabilization.prototype.setArgs = function(value) {
 
 
 /**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.ActuateServo.repeatedFields_ = [1];
-
-/**
  * Oneof group definitions for this message. Each group defines the field
  * numbers belonging to that group. When of these fields' value is set, all
  * other fields in the group are cleared. During deserialization, if multiple
@@ -910,7 +902,7 @@ proto.ActuateServo.prototype.toObject = function(opt_includeInstance) {
  */
 proto.ActuateServo.toObject = function(includeInstance, msg) {
   var f, obj = {
-    servoNumberList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
+    servoNumber: jspb.Message.getFieldWithDefault(msg, 1, 0),
     state: jspb.Message.getFieldWithDefault(msg, 2, 0),
     value: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
@@ -950,8 +942,8 @@ proto.ActuateServo.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!Array<number>} */ (reader.readPackedUint32());
-      msg.setServoNumberList(value);
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setServoNumber(value);
       break;
     case 2:
       var value = /** @type {!proto.ServoState} */ (reader.readEnum());
@@ -990,9 +982,9 @@ proto.ActuateServo.prototype.serializeBinary = function() {
  */
 proto.ActuateServo.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getServoNumberList();
-  if (f.length > 0) {
-    writer.writePackedUint32(
+  f = message.getServoNumber();
+  if (f !== 0) {
+    writer.writeUint32(
       1,
       f
     );
@@ -1015,39 +1007,20 @@ proto.ActuateServo.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * repeated uint32 servo_number = 1;
- * @return {!Array<number>}
+ * optional uint32 servo_number = 1;
+ * @return {number}
  */
-proto.ActuateServo.prototype.getServoNumberList = function() {
-  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 1));
-};
-
-
-/**
- * @param {!Array<number>} value
- * @return {!proto.ActuateServo} returns this
- */
-proto.ActuateServo.prototype.setServoNumberList = function(value) {
-  return jspb.Message.setField(this, 1, value || []);
+proto.ActuateServo.prototype.getServoNumber = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
  * @param {number} value
- * @param {number=} opt_index
  * @return {!proto.ActuateServo} returns this
  */
-proto.ActuateServo.prototype.addServoNumber = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 1, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.ActuateServo} returns this
- */
-proto.ActuateServo.prototype.clearServoNumberList = function() {
-  return this.setServoNumberList([]);
+proto.ActuateServo.prototype.setServoNumber = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -1372,14 +1345,6 @@ proto.ServoConfig.prototype.setState = function(value) {
   return jspb.Message.setProto3EnumField(this, 5, value);
 };
 
-
-/**
- * @enum {number}
- */
-proto.Sensor = {
-  IMU: 0,
-  ENVIRO: 1
-};
 
 /**
  * @enum {number}

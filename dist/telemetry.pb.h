@@ -27,14 +27,16 @@ typedef struct _Telemetry {
     EnviroData enviro;
     bool has_battery;
     BatteryData battery;
-    bool has_radio;
-    RadioData radio;
+    bool has_plane_radio;
+    RadioData plane_radio;
+    bool has_gnd_radio;
+    RadioData gnd_radio;
 } Telemetry;
 
 
 /* Initializer values for message structs */
-#define Telemetry_init_default                   {false, Header_init_default, false, ImuData_init_default, false, GpsData_init_default, false, EnviroData_init_default, false, BatteryData_init_default, false, RadioData_init_default}
-#define Telemetry_init_zero                      {false, Header_init_zero, false, ImuData_init_zero, false, GpsData_init_zero, false, EnviroData_init_zero, false, BatteryData_init_zero, false, RadioData_init_zero}
+#define Telemetry_init_default                   {false, Header_init_default, false, ImuData_init_default, false, GpsData_init_default, false, EnviroData_init_default, false, BatteryData_init_default, false, RadioData_init_default, false, RadioData_init_default}
+#define Telemetry_init_zero                      {false, Header_init_zero, false, ImuData_init_zero, false, GpsData_init_zero, false, EnviroData_init_zero, false, BatteryData_init_zero, false, RadioData_init_zero, false, RadioData_init_zero}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Telemetry_header_tag                     1
@@ -42,7 +44,8 @@ typedef struct _Telemetry {
 #define Telemetry_gps_tag                        3
 #define Telemetry_enviro_tag                     4
 #define Telemetry_battery_tag                    5
-#define Telemetry_radio_tag                      6
+#define Telemetry_plane_radio_tag                6
+#define Telemetry_gnd_radio_tag                  7
 
 /* Struct field encoding specification for nanopb */
 #define Telemetry_FIELDLIST(X, a) \
@@ -51,7 +54,8 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  imu,               2) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  gps,               3) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  enviro,            4) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  battery,           5) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  radio,             6)
+X(a, STATIC,   OPTIONAL, MESSAGE,  plane_radio,       6) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  gnd_radio,         7)
 #define Telemetry_CALLBACK NULL
 #define Telemetry_DEFAULT NULL
 #define Telemetry_header_MSGTYPE Header
@@ -59,7 +63,8 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  radio,             6)
 #define Telemetry_gps_MSGTYPE GpsData
 #define Telemetry_enviro_MSGTYPE EnviroData
 #define Telemetry_battery_MSGTYPE BatteryData
-#define Telemetry_radio_MSGTYPE RadioData
+#define Telemetry_plane_radio_MSGTYPE RadioData
+#define Telemetry_gnd_radio_MSGTYPE RadioData
 
 extern const pb_msgdesc_t Telemetry_msg;
 
@@ -67,7 +72,7 @@ extern const pb_msgdesc_t Telemetry_msg;
 #define Telemetry_fields &Telemetry_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Telemetry_size                           204
+#define Telemetry_size                           233
 
 #ifdef __cplusplus
 } /* extern "C" */

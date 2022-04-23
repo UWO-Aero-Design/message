@@ -75,7 +75,8 @@ proto.Telemetry.toObject = function(includeInstance, msg) {
     gps: (f = msg.getGps()) && sensors_pb.GpsData.toObject(includeInstance, f),
     enviro: (f = msg.getEnviro()) && sensors_pb.EnviroData.toObject(includeInstance, f),
     battery: (f = msg.getBattery()) && sensors_pb.BatteryData.toObject(includeInstance, f),
-    radio: (f = msg.getRadio()) && sensors_pb.RadioData.toObject(includeInstance, f)
+    planeRadio: (f = msg.getPlaneRadio()) && sensors_pb.RadioData.toObject(includeInstance, f),
+    gndRadio: (f = msg.getGndRadio()) && sensors_pb.RadioData.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -140,7 +141,12 @@ proto.Telemetry.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = new sensors_pb.RadioData;
       reader.readMessage(value,sensors_pb.RadioData.deserializeBinaryFromReader);
-      msg.setRadio(value);
+      msg.setPlaneRadio(value);
+      break;
+    case 7:
+      var value = new sensors_pb.RadioData;
+      reader.readMessage(value,sensors_pb.RadioData.deserializeBinaryFromReader);
+      msg.setGndRadio(value);
       break;
     default:
       reader.skipField();
@@ -211,10 +217,18 @@ proto.Telemetry.serializeBinaryToWriter = function(message, writer) {
       sensors_pb.BatteryData.serializeBinaryToWriter
     );
   }
-  f = message.getRadio();
+  f = message.getPlaneRadio();
   if (f != null) {
     writer.writeMessage(
       6,
+      f,
+      sensors_pb.RadioData.serializeBinaryToWriter
+    );
+  }
+  f = message.getGndRadio();
+  if (f != null) {
+    writer.writeMessage(
+      7,
       f,
       sensors_pb.RadioData.serializeBinaryToWriter
     );
@@ -408,10 +422,10 @@ proto.Telemetry.prototype.hasBattery = function() {
 
 
 /**
- * optional RadioData radio = 6;
+ * optional RadioData plane_radio = 6;
  * @return {?proto.RadioData}
  */
-proto.Telemetry.prototype.getRadio = function() {
+proto.Telemetry.prototype.getPlaneRadio = function() {
   return /** @type{?proto.RadioData} */ (
     jspb.Message.getWrapperField(this, sensors_pb.RadioData, 6));
 };
@@ -421,7 +435,7 @@ proto.Telemetry.prototype.getRadio = function() {
  * @param {?proto.RadioData|undefined} value
  * @return {!proto.Telemetry} returns this
 */
-proto.Telemetry.prototype.setRadio = function(value) {
+proto.Telemetry.prototype.setPlaneRadio = function(value) {
   return jspb.Message.setWrapperField(this, 6, value);
 };
 
@@ -430,8 +444,8 @@ proto.Telemetry.prototype.setRadio = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.Telemetry} returns this
  */
-proto.Telemetry.prototype.clearRadio = function() {
-  return this.setRadio(undefined);
+proto.Telemetry.prototype.clearPlaneRadio = function() {
+  return this.setPlaneRadio(undefined);
 };
 
 
@@ -439,8 +453,45 @@ proto.Telemetry.prototype.clearRadio = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.Telemetry.prototype.hasRadio = function() {
+proto.Telemetry.prototype.hasPlaneRadio = function() {
   return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional RadioData gnd_radio = 7;
+ * @return {?proto.RadioData}
+ */
+proto.Telemetry.prototype.getGndRadio = function() {
+  return /** @type{?proto.RadioData} */ (
+    jspb.Message.getWrapperField(this, sensors_pb.RadioData, 7));
+};
+
+
+/**
+ * @param {?proto.RadioData|undefined} value
+ * @return {!proto.Telemetry} returns this
+*/
+proto.Telemetry.prototype.setGndRadio = function(value) {
+  return jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.Telemetry} returns this
+ */
+proto.Telemetry.prototype.clearGndRadio = function() {
+  return this.setGndRadio(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.Telemetry.prototype.hasGndRadio = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 

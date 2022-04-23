@@ -15,11 +15,6 @@ extern "C" {
 #endif
 
 /* Enum definitions */
-typedef enum _Sensor {
-    Sensor_IMU = 0,
-    Sensor_ENVIRO = 1
-} Sensor;
-
 typedef enum _ServoGroup {
     ServoGroup_DROP_PADA = 0
 } ServoGroup;
@@ -41,7 +36,7 @@ typedef struct _ActuateGroup {
 } ActuateGroup;
 
 typedef struct _ActuateServo {
-    pb_callback_t servo_number;
+    uint32_t servo_number;
     pb_size_t which_arg;
     union {
         ServoState state;
@@ -76,10 +71,6 @@ typedef struct _Command {
 
 
 /* Helper constants for enums */
-#define _Sensor_MIN Sensor_IMU
-#define _Sensor_MAX Sensor_ENVIRO
-#define _Sensor_ARRAYSIZE ((Sensor)(Sensor_ENVIRO+1))
-
 #define _ServoGroup_MIN ServoGroup_DROP_PADA
 #define _ServoGroup_MAX ServoGroup_DROP_PADA
 #define _ServoGroup_ARRAYSIZE ((ServoGroup)(ServoGroup_DROP_PADA+1))
@@ -97,12 +88,12 @@ typedef struct _Command {
 #define Command_init_default                     {false, Header_init_default, 0, false, ActuateGroup_init_default, false, FlightStabilization_init_default, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_default                {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_default         {_FlightStabilizationMethods_MIN, 0}
-#define ActuateServo_init_default                {{{NULL}, NULL}, 0, {_ServoState_MIN}}
+#define ActuateServo_init_default                {0, 0, {_ServoState_MIN}}
 #define ServoConfig_init_default                 {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
 #define Command_init_zero                        {false, Header_init_zero, 0, false, ActuateGroup_init_zero, false, FlightStabilization_init_zero, {{NULL}, NULL}, {{NULL}, NULL}}
 #define ActuateGroup_init_zero                   {_ServoGroup_MIN, _ServoState_MIN}
 #define FlightStabilization_init_zero            {_FlightStabilizationMethods_MIN, 0}
-#define ActuateServo_init_zero                   {{{NULL}, NULL}, 0, {_ServoState_MIN}}
+#define ActuateServo_init_zero                   {0, 0, {_ServoState_MIN}}
 #define ServoConfig_init_zero                    {0, 0, 0, _ServoGroup_MIN, _ServoState_MIN}
 
 /* Field tags (for use in manual encoding/decoding) */
@@ -154,10 +145,10 @@ X(a, STATIC,   SINGULAR, UINT32,   args,              2)
 #define FlightStabilization_DEFAULT NULL
 
 #define ActuateServo_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, UINT32,   servo_number,      1) \
+X(a, STATIC,   SINGULAR, UINT32,   servo_number,      1) \
 X(a, STATIC,   ONEOF,    ENUM,     (arg,state,arg.state),   2) \
 X(a, STATIC,   ONEOF,    INT32,    (arg,value,arg.value),   3)
-#define ActuateServo_CALLBACK pb_default_field_callback
+#define ActuateServo_CALLBACK NULL
 #define ActuateServo_DEFAULT NULL
 
 #define ServoConfig_FIELDLIST(X, a) \
@@ -186,7 +177,7 @@ extern const pb_msgdesc_t ServoConfig_msg;
 /* Command_size depends on runtime parameters */
 #define ActuateGroup_size                        4
 #define FlightStabilization_size                 8
-/* ActuateServo_size depends on runtime parameters */
+#define ActuateServo_size                        17
 #define ServoConfig_size                         22
 
 #ifdef __cplusplus
