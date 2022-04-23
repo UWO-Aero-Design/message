@@ -40,11 +40,6 @@ message ServoConfig {
     ServoState state = 5;
 }
 
-enum Sensor {
-    IMU = 0;
-    ENVIRO = 1;
-}
-
 enum ServoGroup {
     DROP_PADA = 0;
 }
