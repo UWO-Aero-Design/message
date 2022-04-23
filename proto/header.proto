@@ -11,9 +11,7 @@ message Header {
 enum Location {
     GROUND_STATION = 0;
     PLANE = 1;
-    GLIDER0 = 2;
-    GLIDER1 = 3;
-    ANY = 4;
+    ANY = 2;
 }
 
 enum Status {
