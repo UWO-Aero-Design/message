@@ -24,7 +24,7 @@ message GpsData {
     float altitude = 6;
     uint32 time = 7;
     uint32 date = 8;
-    uint32 HDOP = 9;
+    uint32 hdop = 9;
     uint32 quality = 10;
 }
 
