@@ -25,7 +25,7 @@ message FlightStabilization {
 }
 
 message ActuateServo {
-    repeated uint32 servo_number = 1;
+    uint32 servo_number = 1;
     oneof arg {
         ServoState state = 2;
         int32 value = 3;
