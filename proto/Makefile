@@ -6,7 +6,7 @@ out ?= ../dist/
 protos: telemetry.proto command.proto
 	@echo "Compiling..."
 	@mkdir -p $(out)
-	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) telemetry.proto command.proto
+	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) *.proto
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
 	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)telemetry.pb.h $(out)command.pb.h
