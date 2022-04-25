@@ -3,13 +3,13 @@ include nanopb.mk
 
 out ?= ../dist/
 
-protos: telemetry.proto command.proto
+protos: *.proto
 	@echo "Compiling..."
 	@mkdir -p $(out)
 	@$(PROTOC) $(PROTOC_OPTS) --nanopb_out=$(out) --js_out=import_style=commonjs,binary:$(out) *.proto
 	@cp ../lib/nanopb-0.4.2/*.c $(out)
 	@cp ../lib/nanopb-0.4.2/*.h $(out)
-	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)telemetry.pb.h $(out)command.pb.h
+	@sed -i '.bak'  's/<pb.h>/"pb.h"/' $(out)*.pb.h $(out)command.pb.h
 	@rm $(out)/*.bak
 	@echo "Done."
 
