@@ -14,5 +14,8 @@ message Telemetry {
     BatteryData battery = 5;
     RadioData plane_radio = 6;
     RadioData gnd_radio = 7;
+
+    // command ack
+    repeated int32 acked_commands = 8;
 }
 
