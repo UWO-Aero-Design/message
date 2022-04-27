@@ -16,6 +16,6 @@ message Telemetry {
     RadioData gnd_radio = 7;
 
     // command ack
-    repeated int32 acked_commands = 8;
+    uint32 response_to = 8;
 }
 
