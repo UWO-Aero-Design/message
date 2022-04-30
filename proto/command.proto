@@ -8,7 +8,7 @@ message Command {
 
     // commands 
     bool reset_processor = 2;
-    ActuateGroup actuate_group = 3;
+    repeated ActuateGroup actuate_group = 3;
     FlightStabilization flight_stabilization = 4;
     repeated ActuateServo actuate_servo = 5;
     repeated ServoConfig servo_config = 6;
